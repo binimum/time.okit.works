@@ -381,7 +381,7 @@
 								<span class="ms dot">.</span>
 								<span class="t ms">{ms}</span>
 								{#if syncing}
-									<span id="tower-cell" class="tower-cell ml-2"><RefreshCw /></span>
+									<span id="tower-cell" class="tower-cell spin ml-2"><RefreshCw /></span>
 								{:else}
 									<span id="tower-cell" class="tower-cell ml-2"><RadioTower /></span>
 								{/if}
@@ -458,13 +458,16 @@
 						{/if}
 					</div>
 					{#if advancedShown && toggleShown}
-						<span transition:fade={{ delay: 0, duration: 200 }}
+						<span transition:fade={{ delay: 0, duration: 200 }} class="utc-info"
 							>UTC: <time id="utc" datetime={utcDateStr}>{utcDateStr1} {utcTimeStr}</time></span
 						>
 					{/if}
 				</div>
 				{#if advancedShown && toggleShown}
-					<div transition:fade={{ delay: 0, duration: 200 }} class="flex flex-col gap-2 mt-4">
+					<div
+						transition:fade={{ delay: 0, duration: 200 }}
+						class="info-card flex flex-col gap-1 mt-4"
+					>
 						<span id="timezone">Timezone: {timezone}</span>
 						<span
 							>Unix: <time id="unix" datetime={date.toTimeString()}>{date.getTime()}</time>
@@ -482,7 +485,7 @@
 					{#if theme === 0}
 						<svg
 							viewBox="0 0 98 96"
-							style="width: 48px; height: 48px;"
+							style="width: 24px; height: 24px;"
 							xmlns="http://www.w3.org/2000/svg"
 							><path
 								fill-rule="evenodd"
@@ -494,7 +497,7 @@
 					{:else if theme === 1}
 						<svg
 							viewBox="0 0 98 96"
-							style="width: 48px; height: 48px;"
+							style="width: 24px; height: 24px;"
 							xmlns="http://www.w3.org/2000/svg"
 							><path
 								fill-rule="evenodd"
@@ -506,7 +509,7 @@
 					{:else}
 						<svg
 							viewBox="0 0 98 96"
-							style="width: 48px; height: 48px;"
+							style="width: 24px; height: 24px;"
 							xmlns="http://www.w3.org/2000/svg"
 							><path
 								fill-rule="evenodd"
@@ -558,17 +561,13 @@
 	.timeStr {
 		font-weight: bold;
 		font-size: 5em;
-	}
-
-	.timezone {
-		text-align: left;
-		position: relative;
-		left: 0;
+		letter-spacing: -0.02em;
 	}
 
 	.dateString,
 	.dateString span {
 		font-size: 2vw;
+		letter-spacing: 0.02em;
 	}
 
 	h1 time span {
@@ -586,27 +585,22 @@
 	}
 
 	:global(.light) {
-		color: #000 !important;
-		background: #fff !important;
+		color: #1a1a1a !important;
+		background: #fafafa !important;
 	}
 	:global(.dark) {
-		color: #eee !important;
-		background: #111 !important;
+		color: #e4e4e4 !important;
+		background: #0a0a0a !important;
 	}
 
 	.ms {
 		font-size: 6vw;
+		opacity: 0.55;
 	}
 
-	/* .mode-button {
-  border-radius: .25rem;
-} */
-
-	/* .moon-button {
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1),
-    0 2px 4px -2px rgb(0 0 0 / 0.1);
-  text-shadow: var(--shadow-md);
-} */
+	.dot {
+		opacity: 0.35;
+	}
 
 	:global(body) {
 		--transition-d: 0.5s;
@@ -615,13 +609,6 @@
 		-o-transition: var(--transition-d) ease;
 		transition: var(--transition-d) ease;
 	}
-
-	/* .react-toggle-track div {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: .8rem;
-} */
 
 	@media (max-width: 800px) {
 		.info-div,
@@ -647,56 +634,98 @@
 	}
 
 	.tower-cell {
-		font-size: 3vw;
+		font-size: 2.5vw;
+		opacity: 0.4;
+		transition: opacity 0.3s ease;
 	}
+
+	:global(.spin) {
+		animation: spin 1s linear infinite;
+	}
+
+	@keyframes spin {
+		from {
+			transform: rotate(0deg);
+		}
+		to {
+			transform: rotate(360deg);
+		}
+	}
+
+	:global(.dark) .timeStr {
+		text-shadow: 0 0 80px rgba(255, 255, 255, 0.04);
+	}
+
 	.toggleButton {
-		padding: 0.5rem;
-		border-radius: 5px;
-		border: 1px solid lightgray;
-		transition: 0.2s;
-		margin-left: calc(-1rem - 24px);
+		padding: 0.35rem;
+		border-radius: 50%;
+		border: none;
+		background: transparent;
+		transition: all 0.2s ease;
+		opacity: 0.35;
+		margin-left: -0.25rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		&:hover {
+			opacity: 0.75;
+			background: rgba(128, 128, 128, 0.1);
+		}
 	}
+
 	.info-div {
 		margin-top: -1em;
 	}
+
 	.theme-selector {
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		gap: 0;
-		border: 1px solid gray;
-		border-radius: 5px;
+		border: 1px solid rgba(128, 128, 128, 0.25);
+		border-radius: 8px;
 		font-weight: bold;
 		font-size: 1.25rem;
 		flex-direction: row !important;
+		overflow: hidden;
 		button {
-			padding: 0.5rem;
+			padding: 0.45rem 0.55rem;
+			transition:
+				filter 0.15s ease,
+				transform 0.1s ease;
+			&:hover {
+				filter: brightness(1.12);
+			}
+			&:active {
+				transform: scale(0.96);
+			}
 		}
 		.light,
 		.dark {
-			border-right: 1px solid gray;
+			border-right: 1px solid rgba(128, 128, 128, 0.25);
 		}
 		.seperator {
 			margin-left: -40px;
 			padding: 0;
 			position: absolute;
+			pointer-events: none;
 		}
 		.seperator:nth-child(2) {
 			margin-left: 40px;
 		}
 		.light {
 			background: #fff;
-			color: black;
-			border-radius: 5px 0 0 5px;
+			color: #1a1a1a;
+			border-radius: 8px 0 0 8px;
 		}
 		.dark {
-			background: #111;
-			color: #eee;
+			background: #1a1a1a;
+			color: #e4e4e4;
 			border-radius: 0;
 		}
 		.custom {
 			background-image: linear-gradient(
-				315deg,
+				135deg,
 				#ff0000,
 				#ff8000,
 				#ffff00,
@@ -706,29 +735,65 @@
 				#ff00ff,
 				#ff0000
 			);
-			border-radius: 0 5px 5px 0;
+			border-radius: 0 8px 8px 0;
 			color: #000;
 		}
 	}
+
 	:global(.color) {
-		border: 1px solid #999;
+		border: 1px solid rgba(128, 128, 128, 0.25);
+		border-radius: 8px;
+		overflow: hidden;
 	}
+
 	.footer {
 		position: fixed;
 		bottom: 0;
 		left: 0;
-		padding: 1rem;
+		padding: 0.75rem;
 		text-align: center;
 		font-size: 2rem;
 		background: transparent;
+		opacity: 0.2;
+		transition: opacity 0.3s ease;
+		&:hover {
+			opacity: 0.55;
+		}
 	}
 
 	.fs-button {
-		font-size: 1.3em;
-		border: 1px solid lightgray;
-		border-radius: 5px;
-		padding: 0.5em;
+		font-size: 1.2em;
+		border: 1px solid rgba(128, 128, 128, 0.25);
+		border-radius: 8px;
+		padding: 0.4em;
+		transition: all 0.15s ease;
+		background: transparent;
+		&:hover {
+			background: rgba(128, 128, 128, 0.08);
+		}
+		&:active {
+			transform: scale(0.95);
+		}
 	}
+
+	.info-card {
+		font-size: 0.85rem;
+		line-height: 1.7;
+		backdrop-filter: blur(4px);
+		-webkit-backdrop-filter: blur(4px);
+		span {
+			display: flex;
+			gap: 1rem;
+			opacity: 0.65;
+		}
+	}
+
+	.utc-info {
+		opacity: 0.6;
+		font-size: 0.85rem;
+		font-variant-numeric: tabular-nums;
+	}
+
 	.delay {
 		font-size: 1vw;
 	}
@@ -736,6 +801,7 @@
 	.colon {
 		font-variant-numeric: normal;
 		font-feature-settings: normal;
+		opacity: 0.35;
 	}
 
 	@media (orientation: portrait) {
